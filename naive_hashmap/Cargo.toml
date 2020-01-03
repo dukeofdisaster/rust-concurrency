@@ -12,3 +12,34 @@ rand = "0.4.2"
 [dev-dependencies]
 quickcheck = "0.6"
 criterion = "0.1"
+
+### Begin Bench specification ###
+#[[bench]]
+#name = "naive"
+#harness = false
+
+### THIS IST TEST 1; cargo afl build --release will work with just this 
+### in our cargo
+[[bin]]
+name = "naive_interpreter"
+doc = false
+
+#[[bin]]
+#name = "standard"
+#doc = false
+
+#[[bin]]
+#name = "naive"
+#doc = false
+
+#[[bench]]
+#name = "specialized"
+#harness = false
+
+#[[bin]]
+#name = "specialized_interpreter"
+#doc = false
+
+#[[bin]]
+#name = "specialized"
+#doc = false
