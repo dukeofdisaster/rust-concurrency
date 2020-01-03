@@ -1,0 +1,27 @@
+[[bench]]
+name = "naive"
+harness = false
+
+[[bin]]
+name = "naive_interpreter"
+doc = false
+
+[[bin]]
+name = "standard"
+doc = false
+
+[[bin]]
+name = "naive"
+doc = false
+
+[[bench]]
+name = "speacialized"
+harness = false
+
+[[bin]]
+name = "specialized_interpreter"
+doc = false
+
+[[bin]]
+name = "specialized"
+doc = false
