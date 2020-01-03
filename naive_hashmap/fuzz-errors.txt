@@ -1,0 +1,55 @@
+boxuser@box:~/gitstuff/rust-concurrency/naive_hashmap$ vim Cargo.toml                                    boxuser@box:~/gitstuff/rust-concurrency/naive_hashmap$ cargo afl fuzz -i resources/in/ -o resources/out/ target/release/naive_interpreter
+afl-fuzz 2.52b by <lcamtuf@google.com>
+[+] You have 12 CPU cores and 2 runnable tasks (utilization: 17%).
+[+] Try parallel jobs - see docs/parallel_fuzzing.txt.
+[*] Checking CPU core loadout...
+[+] Found a free CPU core, binding to #0.
+[*] Checking core_pattern...
+
+[-] Hmm, your system is configured to send core dump notifications to an
+    external utility. This will cause issues: there will be an extended delay
+    between stumbling upon a crash and having this information relayed to the
+    fuzzer via the standard waitpid() API.
+
+    To avoid having crashes misinterpreted as timeouts, please log in as root
+    and temporarily modify /proc/sys/kernel/core_pattern, like so:
+
+    echo core >/proc/sys/kernel/core_pattern
+
+[-] PROGRAM ABORT : Pipe at the beginning of 'core_pattern'
+         Location : check_crash_handling(), afl-fuzz.c:7275
+
+boxuser@box:~/gitstuff/rust-concurrency/naive_hashmap$ cat /proc/sys/kernel/core_p
+core_pattern     core_pipe_limit  
+boxuser@box:~/gitstuff/rust-concurrency/naive_hashmap$ cat /proc/sys/kernel/core_p
+core_pattern     core_pipe_limit  
+boxuser@box:~/gitstuff/rust-concurrency/naive_hashmap$ cat /proc/sys/kernel/core_pattern 
+|/usr/share/apport/apport %p %s %c %d %P
+boxuser@box:~/gitstuff/rust-concurrency/naive_hashmap$ cat /proc/sys/kernel/core_pattern > ~/proc.sys.kernel.core_pattern.bak
+boxuser@box:~/gitstuff/rust-concurrency/naive_hashmap$ sudo bash
+root@box:~/gitstuff/rust-concurrency/naive_hashmap# echo core >/proc/sys/kernel/core_pattern 
+root@box:~/gitstuff/rust-concurrency/naive_hashmap# exit
+exit
+boxuser@box:~/gitstuff/rust-concurrency/naive_hashmap$ cargo afl fuzz -i resources/in/ -o resources/out/ target/release/naive_interpreter
+afl-fuzz 2.52b by <lcamtuf@google.com>
+[+] You have 12 CPU cores and 2 runnable tasks (utilization: 17%).
+[+] Try parallel jobs - see docs/parallel_fuzzing.txt.
+[*] Checking CPU core loadout...
+[+] Found a free CPU core, binding to #0.
+[*] Checking core_pattern...
+[*] Checking CPU scaling governor...
+
+[-] Whoops, your system uses on-demand CPU frequency scaling, adjusted
+    between 781 and 4003 MHz. Unfortunately, the scaling algorithm in the
+    kernel is imperfect and can miss the short-lived processes spawned by
+    afl-fuzz. To keep things moving, run these commands as root:
+
+    cd /sys/devices/system/cpu
+    echo performance | tee cpu*/cpufreq/scaling_governor
+
+    You can later go back to the original state by replacing 'performance' with
+    'ondemand'. If you don't want to change the settings, set AFL_SKIP_CPUFREQ
+    to make afl-fuzz skip this check - but expect some performance drop.
+
+[-] PROGRAM ABORT : Suboptimal CPU scaling governor
+         Location : check_cpu_governor(), afl-fuzz.c:7337
