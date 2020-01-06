@@ -56,6 +56,7 @@ mod tests {
     }
 
     #[test]
+    // Testing with our arbitrary Trait defined above
     fn sut_vs_genuine_article() {
         fn property<T>(actions: Vec<Action<T>>) -> TestResult
         where
